@@ -7,12 +7,6 @@ import (
 
 type Database struct {
 	CrudOperations
-	UsersOperations
-}
-
-type UsersOperations interface {
-	Create(user domain.User) error
-	GetByCred(email string, password string) (domain.User, error)
 }
 
 type CrudOperations interface {

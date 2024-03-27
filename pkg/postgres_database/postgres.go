@@ -1,4 +1,4 @@
-package database_postgres
+package postgres_database
 
 import (
 	"database/sql"
@@ -6,7 +6,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/kelseyhightower/envconfig"
 	_ "github.com/lib/pq"
-	"log"
+	log "github.com/sirupsen/logrus"
 )
 
 type InfoDB struct {
@@ -23,25 +23,39 @@ func InitDB() (*sql.DB, error) {
 	err := godotenv.Load(".env")
 	if err != nil {
 		log.Fatalf("Error loading .env file: %s", err)
-	}
-
-	if err := envconfig.Process("", &dbConfig); err != nil {
 		return nil, err
 	}
 
+	if err := envconfig.Process("", &dbConfig); err != nil {
+		log.Fatalf("Error processing env variable to db configs %s", err)
+		return nil, err
+	}
 	format := fmt.Sprintf("port=%s user=%s dbname=%s sslmode=%s password=%s", dbConfig.Port, dbConfig.UserName, dbConfig.DBname, dbConfig.Sslmode, dbConfig.Password)
-
+	fmt.Println("check:", format)
 	db, err := sql.Open(
-		dbConfig.DriverName,
+		"postgres",
 		format)
 	if err != nil {
+		fmt.Println(err)
+		log.Fatalf("Error opening db %s", err)
 		return nil, err
 	}
 
 	err = db.Ping()
 	if err != nil {
+		log.Fatalf("Error pinging db %s", err)
 		return nil, err
 	}
-
+	query := "CREATE TABLE IF NOT EXISTS movies(" +
+		"id SERIAL NOT NULL UNIQUE," +
+		"title VARCHAR(255) NOT NULL," +
+		"director VARCHAR(255) NOT NULL," +
+		"year INT NOT NULL," +
+		"country VARCHAR(255) NOT NULL)"
+	_, err = db.Exec(query)
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Println("Connected to db successfully")
 	return db, nil
 }

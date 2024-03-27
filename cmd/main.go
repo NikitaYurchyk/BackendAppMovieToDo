@@ -7,7 +7,7 @@ import (
 	"to-do-movie_list/internal/database"
 	"to-do-movie_list/internal/handler"
 	"to-do-movie_list/internal/service"
-	"to-do-movie_list/pkg/database_postgres"
+	"to-do-movie_list/pkg/postgres_database"
 	"to-do-movie_list/server"
 )
 
@@ -18,7 +18,7 @@ func init() {
 }
 
 func main() {
-	db, err := database_postgres.InitDB()
+	db, err := postgres_database.InitDB()
 
 	if err != nil {
 		log.Fatal(err)
