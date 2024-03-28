@@ -1,4 +1,4 @@
-# Movie API REST API
+# Movie-API REST API
 
 ## Overview
 The MovieList REST API Service is a Golang-based application designed for efficient and robust retrieval of movie data. Built with a focus on security and performance, this service utilizes Chi for routing, PostgreSQL for database operations, and JWT-based authorization for secure access.
